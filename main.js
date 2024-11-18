@@ -2,6 +2,7 @@ import { fetcher } from './lib/fetcher.js';
 import { renderContentPage } from './lib/pages/content-page.js';
 import { renderIndexPage } from './lib/pages/index-page.js';
 import { renderSubpage } from './lib/pages/sub-page.js';
+import { renderFlashcardsPage } from './lib/pages/flashcards-page.js'; // Nýr import fyrir Flashcards
 
 async function render(root, querystring) {
     console.log('Rendering started');
@@ -13,38 +14,41 @@ async function render(root, querystring) {
     }
 
     console.log('Fetched index.json:', mainIndexJson);
-    
-    const params = new URLSearchParams(querystring);
-    const type = params.get('type'); 
-    const content = params.get('content'); 
 
-  
-    root.innerHTML = '';
+    const params = new URLSearchParams(querystring);
+    const type = params.get('type'); // e.g., "html"
+    const content = params.get('content'); // e.g., "lectures"
+    const page = params.get('page'); // Nýtt: e.g., "flashcards"
+
+    root.innerHTML = ''; // Clear previous content
 
     const headerElement = document.createElement('header');
     headerElement.innerHTML = `<h1>${mainIndexJson.title}</h1>`;
-    
     const footerElement = document.createElement('footer');
     footerElement.textContent = mainIndexJson.footer;
 
     root.appendChild(headerElement);
+    root.appendChild(footerElement);
 
-    console.log('Type:', type, 'Content:', content);
+    console.log('Type:', type, 'Content:', content, 'Page:', page);
 
-
-    if (!type) {
+    if (!type && !page) {
         console.log('Rendering Index Page');
-        renderIndexPage(root, mainIndexJson);
-    } else if (content) {
-        console.log('Rendering Content Page');
-        renderContentPage(root, mainIndexJson, type, content);
-    } else {
-        console.log('Rendering Subpage');
-        renderSubpage(root, mainIndexJson, type);
+        return renderIndexPage(root, mainIndexJson);
     }
 
+    if (page === 'flashcards') {
+        console.log('Rendering Flashcards Page');
+        return renderFlashcardsPage(root, type); // Kalla á Flashcards með flokk (type)
+    }
 
-    root.appendChild(footerElement);
+    if (content) {
+        console.log('Rendering Content Page');
+        return renderContentPage(root, mainIndexJson);
+    }
+
+    console.log('Rendering Subpage');
+    renderSubpage(root, mainIndexJson, type);
 }
 
 window.addEventListener('popstate', () => {
