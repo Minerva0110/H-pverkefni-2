@@ -37,12 +37,12 @@ render(root, window.location.search);
     }
 
     console.log('Fetched index.json:', mainIndexJson);
-
+    
     const params = new URLSearchParams(querystring);
     const type = params.get('type'); // e.g., "html"
     const content = params.get('content'); // e.g., "lectures"
 
-    root.innerHTML = ''; // Clear previous content
+    root.innerHTML = '';
 
     const headerElement = document.createElement('header');
     headerElement.innerHTML = `<h1>${mainIndexJson.title}</h1>`;
