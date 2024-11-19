@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vefforritunarvefurinn</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="desktop.svg" type="image/svg+xml">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="desktop.svg" type="image/svg+xml" />
+  </head>
+  <body>
     <div id="app">
-        <header>
-            <h1>Vefforritunarvefurinn</h1>
-        </header>
-        <nav>
-            <ul id="navigation"></ul>
-        </nav>
-        <main id="main-content">
-            <!-- Content will dynamically load here -->
-        </main>
+      <header>
+        <h1>Vefforritunarvefurinn</h1>
+      </header>
+      <nav>
+        <ul id="navigation"></ul>
+      </nav>
+      <main id="main-content">
+        <h1>Veldu efni til að læra:</h1>
+        <div id="buttons-container">
+          <button data-topic="css">CSS</button>
+          <button data-topic="html">HTML</button>
+          <button data-topic="js">JavaScript</button>
+        </div>
+
+        <div id="flashcards-container"></div>
+      </main>
     </div>
+    <script src="flashcards.js" type="module"></script>
     <script src="main.js" type="module"></script>
-</body>
+  </body>
 </html>
