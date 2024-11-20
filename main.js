@@ -1,169 +1,208 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const buttons = document.querySelectorAll("#buttons-container button");
-  const flashcardsContainer = document.getElementById("flashcards-container");
-  let correctAnswers = 0;
-  let totalQuestions = 0;
+    const buttons = document.querySelectorAll("#buttons-container button");
+    const flashcardsContainer = document.getElementById("flashcards-container");
+    const footer = document.querySelector("footer");
+    let correctAnswers = 0;
+    let totalQuestions = 0;
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", async () => {
-      const topic = button.dataset.topic; // Get topic (e.g., 'css', 'html', 'js')
-      addNavigationButtons(topic);
-    });
-  });
-
-  // Function to add navigation buttons
-  function addNavigationButtons(topic) {
-    // Clear previous navigation buttons if any
-    const existingNav = document.querySelector(".navigation-buttons");
-    if (existingNav) {
-      existingNav.remove();
-    }
-
-    const navigationContainer = document.createElement("div");
-    navigationContainer.className = "navigation-buttons";
-    navigationContainer.innerHTML = `
-        <button id="show-lectures">Fyrirlestrar</button>
-        <button id="show-keywords">Lykilhugtök</button>
-        <button id="show-questions">Spurningar</button>
-      `;
-    flashcardsContainer.innerHTML = ""; // Clear previous content
-    flashcardsContainer.appendChild(navigationContainer);
-
-    // Add event listeners to the newly created buttons
-    document.getElementById("show-lectures").addEventListener("click", () => {
-      loadLectures(topic);
+    buttons.forEach((button) => {
+        button.addEventListener("click", async () => {
+            const topic = button.dataset.topic; // Get topic (e.g., 'css', 'html', 'js')
+            addNavigationButtons(topic);
+        });
     });
 
-    document.getElementById("show-keywords").addEventListener("click", () => {
-      loadKeywords(topic);
-    });
+    // Function to add navigation buttons
+    function addNavigationButtons(topic) {
+        // Clear previous navigation buttons if any
+        const existingNav = document.querySelector(".navigation-buttons");
+        if (existingNav) {
+            existingNav.remove();
+        }
 
-    document.getElementById("show-questions").addEventListener("click", () => {
-      loadQuestions(topic);
-    });
-  }
+        const navigationContainer = document.createElement("div");
+        navigationContainer.className = "navigation-buttons";
+        navigationContainer.innerHTML = `
+            <button id="show-lectures">Fyrirlestrar</button>
+            <button id="show-keywords">Lykilhugtök</button>
+            <button id="show-questions">Spurningar</button>
+        `;
+        flashcardsContainer.innerHTML = ""; // Clear previous content
+        flashcardsContainer.appendChild(navigationContainer);
 
-  // Function to load lectures
-  async function loadLectures(topic) {
-    try {
-      // Fetch the relevant JSON file for lectures
-      const response = await fetch(`data/${topic}/lectures.json`);
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching data for ${topic}: ${response.statusText}`
-        );
-      }
-      const data = await response.json();
-
-      // Clear previous content
-      flashcardsContainer.innerHTML = "";
-
-      // Render lectures data as text
-      data.lectures.forEach((lecture) => {
-        const lectureContainer = document.createElement("div");
-        lectureContainer.className = "lecture-container";
-        lectureContainer.innerHTML = `<h3>${lecture.title}</h3>`;
-
-        lecture.content.forEach((contentItem) => {
-          if (contentItem.type === "heading") {
-            lectureContainer.innerHTML += `<h4>${contentItem.data}</h4>`;
-          } else if (contentItem.type === "text") {
-            lectureContainer.innerHTML += `<p>${contentItem.data}</p>`;
-          } else if (contentItem.type === "quote") {
-            lectureContainer.innerHTML += `<blockquote>${contentItem.data}<br><small>${contentItem.attribute || ""}</small></blockquote>`;
-          } else if (contentItem.type === "image") {
-            lectureContainer.innerHTML += `<div class="image-container"><img src="${contentItem.data}" alt="${contentItem.caption || ""}" class="full-width-image"><p>${contentItem.caption || ""}</p></div>`;
-          } else if (contentItem.type === "list") {
-            lectureContainer.innerHTML += `<ul>${contentItem.data.map(item => `<li>${item}</li>`).join("")}</ul>`;
-          }
+        // Add event listeners to the newly created buttons
+        document.getElementById("show-lectures").addEventListener("click", () => {
+            loadLectures(topic);
+            updateFooterNavigation("lectures", topic);
         });
 
-        flashcardsContainer.appendChild(lectureContainer);
-      });
+        document.getElementById("show-keywords").addEventListener("click", () => {
+            loadKeywords(topic);
+            updateFooterNavigation("keywords", topic);
+        });
 
-      // Save progress to localStorage
-      saveProgress(topic, "lectures", true);
-    } catch (error) {
-      console.error(error);
-      flashcardsContainer.innerHTML =
-        "<p>Error loading the lectures. Please try again later.</p>";
+        document.getElementById("show-questions").addEventListener("click", () => {
+            loadQuestions(topic);
+            updateFooterNavigation("questions", topic);
+        });
     }
-  }
 
-  // Function to load keywords
-  async function loadKeywords(topic) {
-    try {
-      const response = await fetch(`data/${topic}/keywords.json`);
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching keywords for ${topic}: ${response.statusText}`
-        );
-      }
-      const data = await response.json();
+    // Function to update footer navigation based on the current section
+    function updateFooterNavigation(currentSection, topic) {
+        // Clear existing footer navigation buttons if any
+        footer.innerHTML = '';
 
-      // Clear previous content
-      flashcardsContainer.innerHTML = "";
+        // Add buttons based on the current section
+        if (currentSection === "lectures") {
+            footer.innerHTML = `
+                <a href="#" id="footer-keywords" class="footer-btn">Lykilhugtök</a>
+                <a href="#" id="footer-questions" class="footer-btn">Spurningar</a>
+            `;
+        } else if (currentSection === "keywords") {
+            footer.innerHTML = `
+                <a href="#" id="footer-lectures" class="footer-btn">Fyrirlestrar</a>
+                <a href="#" id="footer-questions" class="footer-btn">Spurningar</a>
+            `;
+        } else if (currentSection === "questions") {
+            footer.innerHTML = `
+                <a href="#" id="footer-lectures" class="footer-btn">Fyrirlestrar</a>
+                <a href="#" id="footer-keywords" class="footer-btn">Lykilhugtök</a>
+            `;
+        }
 
-      data.keywords.forEach((keyword) => {
-        const keywordElement = createFlashcard(keyword);
-        flashcardsContainer.appendChild(keywordElement);
-      });
+        // Add event listeners for the footer buttons
+        if (document.getElementById("footer-lectures")) {
+            document.getElementById("footer-lectures").addEventListener("click", (e) => {
+                e.preventDefault();
+                loadLectures(topic);
+                updateFooterNavigation("lectures", topic);
+            });
+        }
 
-      // Show the first card
-      const firstCard = flashcardsContainer.querySelector(".flashcard");
-      if (firstCard) {
-        firstCard.style.display = "block";
-      }
+        if (document.getElementById("footer-keywords")) {
+            document.getElementById("footer-keywords").addEventListener("click", (e) => {
+                e.preventDefault();
+                loadKeywords(topic);
+                updateFooterNavigation("keywords", topic);
+            });
+        }
 
-      // Save progress to localStorage
-      saveProgress(topic, "keywords", true);
-    } catch (error) {
-      console.error(error);
-      flashcardsContainer.innerHTML =
-        "<p>Error loading the keywords. Please try again later.</p>";
+        if (document.getElementById("footer-questions")) {
+            document.getElementById("footer-questions").addEventListener("click", (e) => {
+                e.preventDefault();
+                loadQuestions(topic);
+                updateFooterNavigation("questions", topic);
+            });
+        }
     }
-  }
 
-  // Function to load questions
-  async function loadQuestions(topic) {
-    try {
-      const response = await fetch(`data/${topic}/questions.json`);
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching questions for ${topic}: ${response.statusText}`
-        );
-      }
-      const data = await response.json();
+    // Function to load lectures
+    async function loadLectures(topic) {
+        try {
+            const response = await fetch(`data/${topic}/lectures.json`);
+            if (!response.ok) {
+                throw new Error(`Error fetching data for ${topic}: ${response.statusText}`);
+            }
+            const data = await response.json();
 
-      // Clear previous content
-      flashcardsContainer.innerHTML = "";
-      correctAnswers = 0;
-      totalQuestions = data.questions.length;
+            flashcardsContainer.innerHTML = ""; // Clear previous content
 
-      // Shuffle questions
-      data.questions = shuffleArray(data.questions);
+            data.lectures.forEach((lecture) => {
+                const lectureContainer = document.createElement("div");
+                lectureContainer.className = "lecture-container";
+                lectureContainer.innerHTML = `<h3>${lecture.title}</h3>`;
 
-      data.questions.forEach((question, index) => {
-        // Shuffle the answers array for each question
-        question.answers = shuffleArray(question.answers);
-        const card = createQuestionCard(question, index);
-        flashcardsContainer.appendChild(card);
-      });
+                lecture.content.forEach((contentItem) => {
+                    if (contentItem.type === "heading") {
+                        lectureContainer.innerHTML += `<h4>${contentItem.data}</h4>`;
+                    } else if (contentItem.type === "text") {
+                        lectureContainer.innerHTML += `<p>${contentItem.data}</p>`;
+                    } else if (contentItem.type === "quote") {
+                        lectureContainer.innerHTML += `<blockquote>${contentItem.data}<br><small>${contentItem.attribute || ""}</small></blockquote>`;
+                    } else if (contentItem.type === "image") {
+                        lectureContainer.innerHTML += `<div class="image-container"><img src="${contentItem.data}" alt="${contentItem.caption || ""}" class="full-width-image"><p>${contentItem.caption || ""}</p></div>`;
+                    } else if (contentItem.type === "list") {
+                        lectureContainer.innerHTML += `<ul>${contentItem.data.map(item => `<li>${item}</li>`).join("")}</ul>`;
+                    }
+                });
 
-      // Show the first card
-      const firstCard = flashcardsContainer.querySelector(".flashcard");
-      if (firstCard) {
-        firstCard.style.display = "block";
-      }
+                flashcardsContainer.appendChild(lectureContainer);
+            });
 
-      // Save progress to localStorage
-      saveProgress(topic, "questions", true);
-    } catch (error) {
-      console.error(error);
-      flashcardsContainer.innerHTML =
-        "<p>Error loading the questions. Please try again later.</p>";
+            // Save progress to localStorage
+            saveProgress(topic, "lectures", true);
+        } catch (error) {
+            console.error(error);
+            flashcardsContainer.innerHTML = "<p>Error loading the lectures. Please try again later.</p>";
+        }
     }
-  }
+
+    // Function to load keywords
+    async function loadKeywords(topic) {
+        try {
+            const response = await fetch(`data/${topic}/keywords.json`);
+            if (!response.ok) {
+                throw new Error(`Error fetching keywords for ${topic}: ${response.statusText}`);
+            }
+            const data = await response.json();
+
+            flashcardsContainer.innerHTML = ""; // Clear previous content
+
+            data.keywords.forEach((keyword) => {
+                const keywordElement = createFlashcard(keyword);
+                flashcardsContainer.appendChild(keywordElement);
+            });
+
+            // Show the first card
+            const firstCard = flashcardsContainer.querySelector(".flashcard");
+            if (firstCard) {
+                firstCard.style.display = "block";
+            }
+
+            // Save progress to localStorage
+            saveProgress(topic, "keywords", true);
+        } catch (error) {
+            console.error(error);
+            flashcardsContainer.innerHTML = "<p>Error loading the keywords. Please try again later.</p>";
+        }
+    }
+
+    // Function to load questions
+    async function loadQuestions(topic) {
+        try {
+            const response = await fetch(`data/${topic}/questions.json`);
+            if (!response.ok) {
+                throw new Error(`Error fetching questions for ${topic}: ${response.statusText}`);
+            }
+            const data = await response.json();
+
+            flashcardsContainer.innerHTML = ""; // Clear previous content
+            correctAnswers = 0;
+            totalQuestions = data.questions.length;
+
+            // Shuffle questions
+            data.questions = shuffleArray(data.questions);
+
+            data.questions.forEach((question, index) => {
+                question.answers = shuffleArray(question.answers);
+                const card = createQuestionCard(question, index);
+                flashcardsContainer.appendChild(card);
+            });
+
+            // Show the first card
+            const firstCard = flashcardsContainer.querySelector(".flashcard");
+            if (firstCard) {
+                firstCard.style.display = "block";
+            }
+
+            // Save progress to localStorage
+            saveProgress(topic, "questions", true);
+        } catch (error) {
+            console.error(error);
+            flashcardsContainer.innerHTML = "<p>Error loading the questions. Please try again later.</p>";
+        }
+    }
+
 
   function displayProgress() {
     let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
