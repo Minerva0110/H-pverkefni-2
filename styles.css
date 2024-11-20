@@ -13,8 +13,7 @@ html {
   --max-width: 56rem;
 
   --font-size-button: 1rem;
-  --font-family: -system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-family: 'Poppins', -system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
   --color-light-gray: #f0f0f0;
   --color-background-zebra: var(--color-light-gray);
@@ -34,7 +33,7 @@ body {
   padding: var(--spacing);
   max-width: var(--max-width);
   min-height: 100vh;
-  border: 1px solid #ccc; 
+  border: 1px solid #ccc;
   display: block;
   box-sizing: border-box;
 }
@@ -54,6 +53,15 @@ button {
   font-size: inherit;
 }
 
+.full-width-image {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+
 button {
   padding: 0.25rem 0.5rem;
   background-color: var(--button-bg-color);
@@ -61,12 +69,65 @@ button {
   border: 1px solid #ccc;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
 button:hover {
   background-color: var(--button-bg-hover-color);
+  color: var(--text-hover-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
 }
+
+button:active {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+  transform: scale(0.98);
+}
+
+#home-btn {
+  background-color: #7492B9;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+#home-btn:hover {
+  background-color: #1E3F66;
+}
+
+/* Footer styling */
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer button styling */
+.footer-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 15px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.footer-btn:hover {
+  background-color: #45a049;
+}
+
 
 #root {
   display: flex;
@@ -98,6 +159,7 @@ header {
 
 h2 {
   text-align: center;
+  color: var(--text-color);
 }
 
 #flashcard {
@@ -105,7 +167,7 @@ h2 {
   margin: 20px auto;
   text-align: center;
   border: 1px solid #ddd;
-  padding: 20px;
+  padding: 25px;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -123,12 +185,36 @@ h2 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
   padding: 20px;
-  max-width: 400px;
-  display: none; /* Kort eru falin fyrst */
+  max-width: 100%;
+  display: none;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.flashcard:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
 }
 
 .flashcard .card-content {
   text-align: center;
+  color: var(--text-color);
+}
+
+.flashcard .answer-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.flashcard .answer-button {
+  background-color: var(--button-bg-color);
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  flex: 0 1 auto;
 }
 
 .flashcard .card-footer {
@@ -151,21 +237,29 @@ h2 {
   border: 1px solid #ccc;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
 .navigation-buttons button:hover, .card-footer button:hover, button:hover {
   background-color: var(--button-bg-hover-color);
+  color: var(--text-hover-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
 }
+
 
 .back-card-btn {
   background-color: var(--button-back-color);
   display: inline-block;
-  margin-top: var(--spacing); /* Adds spacing to buttons to make them more visually distinct */
+  margin-top: var(--spacing);
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
 .back-card-btn:hover {
   background-color: var(--button-bg-hover-color);
+  color: var(--text-hover-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
@@ -175,5 +269,10 @@ h2 {
 
   .card-footer button {
     width: 100%;
+  }
+
+  #buttons-container {
+    flex-direction: column;
+    gap: 5px;
   }
 }

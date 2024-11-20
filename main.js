@@ -26,8 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
         <button id="show-keywords">Lykilhugtök</button>
         <button id="show-questions">Spurningar</button>
       `;
+<<<<<<< HEAD
     flashcardsContainer.innerHTML = `<h2>Hvað viltu læra um ${topic.toUpperCase()}?</h2>`; // Add heading with topic name
     flashcardsContainer.appendChild(navigationContainer); // Add navigation buttons
+=======
+    flashcardsContainer.innerHTML = ""; // Clear previous content
+>>>>>>> 927fc0dbd336e208ac898edc47adc0c4b2c45102
     flashcardsContainer.appendChild(navigationContainer);
 
     // Add event listeners to the newly created buttons
@@ -59,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Clear previous content
       flashcardsContainer.innerHTML = "";
 
+<<<<<<< HEAD
       // Render lectures data
       data.lectures.forEach((lecture) => {
         const card = createFlashcard(lecture);
@@ -70,6 +75,30 @@ document.addEventListener("DOMContentLoaded", () => {
       if (firstCard) {
         firstCard.style.display = "block";
       }
+=======
+      // Render lectures data as text
+      data.lectures.forEach((lecture) => {
+        const lectureContainer = document.createElement("div");
+        lectureContainer.className = "lecture-container";
+        lectureContainer.innerHTML = `<h3>${lecture.title}</h3>`;
+
+        lecture.content.forEach((contentItem) => {
+          if (contentItem.type === "heading") {
+            lectureContainer.innerHTML += `<h4>${contentItem.data}</h4>`;
+          } else if (contentItem.type === "text") {
+            lectureContainer.innerHTML += `<p>${contentItem.data}</p>`;
+          } else if (contentItem.type === "quote") {
+            lectureContainer.innerHTML += `<blockquote>${contentItem.data}<br><small>${contentItem.attribute || ""}</small></blockquote>`;
+          } else if (contentItem.type === "image") {
+            lectureContainer.innerHTML += `<div class="image-container"><img src="${contentItem.data}" alt="${contentItem.caption || ""}" class="full-width-image"><p>${contentItem.caption || ""}</p></div>`;
+          } else if (contentItem.type === "list") {
+            lectureContainer.innerHTML += `<ul>${contentItem.data.map(item => `<li>${item}</li>`).join("")}</ul>`;
+          }
+        });
+
+        flashcardsContainer.appendChild(lectureContainer);
+      });
+>>>>>>> 927fc0dbd336e208ac898edc47adc0c4b2c45102
 
       // Save progress to localStorage
       saveProgress(topic, "lectures", true);
@@ -130,6 +159,12 @@ document.addEventListener("DOMContentLoaded", () => {
       correctAnswers = 0;
       totalQuestions = data.questions.length;
 
+<<<<<<< HEAD
+=======
+      // Shuffle questions
+      data.questions = shuffleArray(data.questions);
+
+>>>>>>> 927fc0dbd336e208ac898edc47adc0c4b2c45102
       data.questions.forEach((question, index) => {
         // Shuffle the answers array for each question
         question.answers = shuffleArray(question.answers);
@@ -152,16 +187,65 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+<<<<<<< HEAD
   // Function to create a flashcard for lectures or keywords
+=======
+  function displayProgress() {
+    let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
+    const progressList = document.getElementById('progress-list');
+
+    if (!progressList) {
+        console.error('Framvindulistinn fannst ekki!');
+        return;
+    }
+
+    progressList.innerHTML = ''; // Hreinsar listann
+    let incorrectList = []; // Lista yfir spurningar sem þarf að æfa betur
+
+    Object.keys(progress).forEach(questionId => {
+        const listItem = document.createElement('li');
+        const isCorrect = progress[questionId];
+
+        if (isCorrect) {
+            listItem.textContent = `Spurning ${questionId}: Rétt`;
+            listItem.classList.add('correct');
+        } else {
+            listItem.textContent = `Spurning ${questionId}: Rangt (æfa betur)`;
+            listItem.classList.add('incorrect');
+            incorrectList.push(questionId); // Bætir við í æfa betur lista
+        }
+
+        progressList.appendChild(listItem);
+    });
+
+    // Birta æfa betur lista ef einhverjar rangar spurningar eru
+    if (incorrectList.length > 0) {
+        const betterPracticeSection = document.createElement('div');
+        betterPracticeSection.className = 'better-practice';
+        betterPracticeSection.innerHTML = `
+            <h3>Spurningar sem þú ættir að æfa betur:</h3>
+            <ul>
+                ${incorrectList.map(q => `<li>Spurning ${q}</li>`).join('')}
+            </ul>
+        `;
+        progressList.parentElement.appendChild(betterPracticeSection);
+    }
+}
+  // Function to create a flashcard for keywords
+>>>>>>> 927fc0dbd336e208ac898edc47adc0c4b2c45102
   function createFlashcard(item) {
     const card = document.createElement("div");
     card.className = "flashcard card";
     card.innerHTML = `
         <div class="card-content">
           <h3>${item.title}</h3>
+<<<<<<< HEAD
           <p>${
             item.content[0]?.data || item.content || "No content available"
           }</p>
+=======
+          <p>${item.content[0]?.data || item.content || "No content available"}</p>
+>>>>>>> 927fc0dbd336e208ac898edc47adc0c4b2c45102
         </div>
         <div class="card-footer">
           <button class="next-card-btn">Næsta</button>
@@ -197,6 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="card-content">
           <h3>Spurning ${index + 1}</h3>
           <p>${question.question}</p>
+<<<<<<< HEAD
           <ul style="text-align: left;">
             ${question.answers
               .map(
@@ -211,13 +296,26 @@ document.addEventListener("DOMContentLoaded", () => {
               )
               .join("")}
           </ul>
+=======
+          <div class="answer-buttons" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-around;">
+            ${question.answers
+              .map(
+                (answer, i) => `
+                  <button class="answer-button" data-answer-index="${i}" style="margin: 5px;">
+                    ${answer.answer}
+                  </button>
+                `
+              )
+              .join("")}
+          </div>
+>>>>>>> 927fc0dbd336e208ac898edc47adc0c4b2c45102
         </div>
         <div class="card-footer">
-          <button class="submit-answer-btn">Svara</button>
           <button class="next-card-btn" style="display:none;">Næsta</button>
         </div>
       `;
 
+<<<<<<< HEAD
     card.querySelector(".submit-answer-btn").addEventListener("click", () => {
       const selectedAnswer = card.querySelector(
         `input[name="question-${index}"]:checked`
@@ -259,6 +357,99 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.display = "none";
     return card;
   }
+=======
+    const answerButtons = card.querySelectorAll(".answer-button");
+    answerButtons.forEach((button) => {
+     button.addEventListener("click", () => {
+    const answerIndex = parseInt(button.dataset.answerIndex, 10);
+    const isCorrect = question.answers[answerIndex].correct;
+
+    // Vista framvindu fyrir þessa spurningu
+    saveProgress(`question-${index + 1}`, isCorrect);
+
+    if (isCorrect) {
+        correctAnswers++;
+        triggerConfetti();
+    }
+    answerButtons.forEach((btn) => (btn.disabled = true));
+    card.querySelector(".next-card-btn").style.display = "inline-block";
+});
+
+    });
+
+
+    card.querySelector(".next-card-btn").addEventListener("click", () => {
+      card.style.display = "none";
+      const nextCard = card.nextElementSibling;
+      if (nextCard && nextCard.classList.contains("flashcard")) {
+        nextCard.style.display = "block";
+      } else {
+        const score = Math.round((correctAnswers / totalQuestions) * 100);
+        flashcardsContainer.innerHTML = `<div class="end-message"><p>Þú fékkst ${score}% rétt.</p><button id="back-btn">Til baka</button></div>`;
+        document.getElementById("back-btn").addEventListener("click", () => {
+          flashcardsContainer.innerHTML = "";
+          document
+            .getElementById("buttons-container")
+            .scrollIntoView({ behavior: "smooth" });
+        });
+      }
+    });
+
+    card.style.display = "none";
+    return card;
+  }
+
+  // Geymir framvindu notandans í localStorage
+function saveProgress(questionId, isCorrect) {
+  let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
+  progress[questionId] = isCorrect; // Vista hvort svar er rétt
+  localStorage.setItem('userProgress', JSON.stringify(progress));
+}
+
+// Sækir framvindu og birtir hana á progress.html
+function displayProgress() {
+  let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
+  const progressList = document.getElementById('progress-list');
+
+  if (!progressList) {
+      console.error('Framvindulistinn fannst ekki!');
+      return;
+  }
+
+  progressList.innerHTML = ''; // Hreinsar listann
+  let correctAnswers = 0;
+  let incorrectAnswers = 0;
+
+  // Fer yfir allar spurningar og flokkar réttar og rangar
+  Object.keys(progress).forEach(questionId => {
+      const listItem = document.createElement('li');
+      const isCorrect = progress[questionId];
+
+      if (isCorrect) {
+          listItem.textContent = `Spurning ${questionId}: Rétt`;
+          listItem.classList.add('correct');
+          correctAnswers++;
+      } else {
+          listItem.textContent = `Spurning ${questionId}: Rangt (æfa betur)`;
+          listItem.classList.add('incorrect');
+          incorrectAnswers++;
+      }
+
+      progressList.appendChild(listItem);
+  });
+
+  // Bætir yfirliti við efst í framvinduna
+  const summary = document.createElement('p');
+  summary.textContent = `Rétt svör: ${correctAnswers}, Röng svör: ${incorrectAnswers}`;
+  progressList.parentElement.insertBefore(summary, progressList);
+}
+
+// Upphafssímtal þegar progress.html er opnað
+if (window.location.pathname.includes('progress.html')) {
+  window.onload = displayProgress;
+}
+
+>>>>>>> 927fc0dbd336e208ac898edc47adc0c4b2c45102
 
   // Function to trigger confetti effect
   function triggerConfetti() {
