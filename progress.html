@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Framfærir</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Framfærir</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Framvinda þín</h2>
+            <p>Hér getur þú skoðað hversu langt þú ert kominn í spurningunum.</p>
+            <ul id="progress-list">
+            </ul>
+            <button id="home-btn">Heim</button>
+        </section>
+        <script>
+            document.getElementById('home-btn').addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+        </script>
+    </main>
+    <footer>
+        <p>&copy; 2024 Flashcard Website</p>
+    </footer>
+    <script src="main.js"></script>
+    <script src="progress.js"></script>
+</body>
+</html>

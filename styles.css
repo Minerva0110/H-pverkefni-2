@@ -84,6 +84,51 @@ button:active {
   transform: scale(0.98);
 }
 
+#home-btn {
+  background-color: #7492B9;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+#home-btn:hover {
+  background-color: #1E3F66;
+}
+
+/* Footer styling */
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer button styling */
+.footer-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 15px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.footer-btn:hover {
+  background-color: #45a049;
+}
+
+
 #root {
   display: flex;
   flex-direction: column;

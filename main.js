@@ -165,6 +165,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function displayProgress() {
+    let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
+    const progressList = document.getElementById('progress-list');
+
+    if (!progressList) {
+        console.error('Framvindulistinn fannst ekki!');
+        return;
+    }
+
+    progressList.innerHTML = ''; // Hreinsar listann
+    let incorrectList = []; // Lista yfir spurningar sem þarf að æfa betur
+
+    Object.keys(progress).forEach(questionId => {
+        const listItem = document.createElement('li');
+        const isCorrect = progress[questionId];
+
+        if (isCorrect) {
+            listItem.textContent = `Spurning ${questionId}: Rétt`;
+            listItem.classList.add('correct');
+        } else {
+            listItem.textContent = `Spurning ${questionId}: Rangt (æfa betur)`;
+            listItem.classList.add('incorrect');
+            incorrectList.push(questionId); // Bætir við í æfa betur lista
+        }
+
+        progressList.appendChild(listItem);
+    });
+
+    // Birta æfa betur lista ef einhverjar rangar spurningar eru
+    if (incorrectList.length > 0) {
+        const betterPracticeSection = document.createElement('div');
+        betterPracticeSection.className = 'better-practice';
+        betterPracticeSection.innerHTML = `
+            <h3>Spurningar sem þú ættir að æfa betur:</h3>
+            <ul>
+                ${incorrectList.map(q => `<li>Spurning ${q}</li>`).join('')}
+            </ul>
+        `;
+        progressList.parentElement.appendChild(betterPracticeSection);
+    }
+}
   // Function to create a flashcard for keywords
   function createFlashcard(item) {
     const card = document.createElement("div");
@@ -227,16 +268,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const answerButtons = card.querySelectorAll(".answer-button");
     answerButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const answerIndex = parseInt(button.dataset.answerIndex, 10);
-        if (question.answers[answerIndex].correct) {
-          correctAnswers++;
-          // Trigger confetti effect
-          triggerConfetti();
-        }
-        answerButtons.forEach((btn) => (btn.disabled = true));
-        card.querySelector(".next-card-btn").style.display = "inline-block";
-      });
+     button.addEventListener("click", () => {
+    const answerIndex = parseInt(button.dataset.answerIndex, 10);
+    const isCorrect = question.answers[answerIndex].correct;
+
+    // Vista framvindu fyrir þessa spurningu
+    saveProgress(`question-${index + 1}`, isCorrect);
+
+    if (isCorrect) {
+        correctAnswers++;
+        triggerConfetti();
+    }
+    answerButtons.forEach((btn) => (btn.disabled = true));
+    card.querySelector(".next-card-btn").style.display = "inline-block";
+});
+
     });
 
 
@@ -260,6 +306,57 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.display = "none";
     return card;
   }
+
+  // Geymir framvindu notandans í localStorage
+function saveProgress(questionId, isCorrect) {
+  let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
+  progress[questionId] = isCorrect; // Vista hvort svar er rétt
+  localStorage.setItem('userProgress', JSON.stringify(progress));
+}
+
+// Sækir framvindu og birtir hana á progress.html
+function displayProgress() {
+  let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
+  const progressList = document.getElementById('progress-list');
+
+  if (!progressList) {
+      console.error('Framvindulistinn fannst ekki!');
+      return;
+  }
+
+  progressList.innerHTML = ''; // Hreinsar listann
+  let correctAnswers = 0;
+  let incorrectAnswers = 0;
+
+  // Fer yfir allar spurningar og flokkar réttar og rangar
+  Object.keys(progress).forEach(questionId => {
+      const listItem = document.createElement('li');
+      const isCorrect = progress[questionId];
+
+      if (isCorrect) {
+          listItem.textContent = `Spurning ${questionId}: Rétt`;
+          listItem.classList.add('correct');
+          correctAnswers++;
+      } else {
+          listItem.textContent = `Spurning ${questionId}: Rangt (æfa betur)`;
+          listItem.classList.add('incorrect');
+          incorrectAnswers++;
+      }
+
+      progressList.appendChild(listItem);
+  });
+
+  // Bætir yfirliti við efst í framvinduna
+  const summary = document.createElement('p');
+  summary.textContent = `Rétt svör: ${correctAnswers}, Röng svör: ${incorrectAnswers}`;
+  progressList.parentElement.insertBefore(summary, progressList);
+}
+
+// Upphafssímtal þegar progress.html er opnað
+if (window.location.pathname.includes('progress.html')) {
+  window.onload = displayProgress;
+}
+
 
   // Function to trigger confetti effect
   function triggerConfetti() {
