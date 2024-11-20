@@ -278,20 +278,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const answerButtons = card.querySelectorAll(".answer-button");
     answerButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const answerIndex = parseInt(button.dataset.answerIndex, 10);
-        const isCorrect = question.answers[answerIndex].correct;
+     button.addEventListener("click", () => {
+    const answerIndex = parseInt(button.dataset.answerIndex, 10);
+    const isCorrect = question.answers[answerIndex].correct;
 
-        // Vista framvindu fyrir þessa spurningu
-        saveProgress(`question-${index + 1}`, isCorrect);
+    // Vista framvindu fyrir þessa spurningu
+    saveProgress(`question-${index + 1}`, isCorrect);
 
-        if (isCorrect) {
-          correctAnswers++;
-          triggerConfetti();
-        }
-        answerButtons.forEach((btn) => (btn.disabled = true));
-        card.querySelector(".next-card-btn").style.display = "inline-block";
-      });
+    if (isCorrect) {
+        correctAnswers++;
+        triggerConfetti();
+    }
+    answerButtons.forEach((btn) => (btn.disabled = true));
+    card.querySelector(".next-card-btn").style.display = "inline-block";
+});
+
     });
 
     card.querySelector(".next-card-btn").addEventListener("click", () => {
