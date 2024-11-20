@@ -32,8 +32,8 @@ body {
   margin: 0 auto;
   padding: var(--spacing);
   max-width: var(--max-width);
-  min-height: 100vh; /* Make body longer */
-  border: 1px solid #ccc; /* Adds a border to visually separate body and outer area */
+  min-height: 100vh;
+  border: 1px solid #ccc;
   display: block;
   box-sizing: border-box;
 }
@@ -52,6 +52,15 @@ textarea,
 button {
   font-size: inherit;
 }
+
+.full-width-image {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
 
 button {
   padding: 0.25rem 0.5rem;
@@ -131,8 +140,8 @@ h2 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
   padding: 20px;
-  max-width: 400px;
-  display: none; /* Kort eru falin fyrst */
+  max-width: 100%;
+  display: none;
   transition: box-shadow 0.3s, transform 0.3s;
 }
 
@@ -144,6 +153,23 @@ h2 {
 .flashcard .card-content {
   text-align: center;
   color: var(--text-color);
+}
+
+.flashcard .answer-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.flashcard .answer-button {
+  background-color: var(--button-bg-color);
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  flex: 0 1 auto;
 }
 
 .flashcard .card-footer {
@@ -176,10 +202,11 @@ h2 {
   transform: translateY(-2px);
 }
 
+
 .back-card-btn {
   background-color: var(--button-back-color);
   display: inline-block;
-  margin-top: var(--spacing); /* Adds spacing to buttons to make them more visually distinct */
+  margin-top: var(--spacing);
   transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
