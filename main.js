@@ -79,9 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(`data/${topic}/lectures.json`);
       if (!response.ok) {
-        throw new Error(
-          `Error fetching data for ${topic}: ${response.statusText}`
-        );
+        throw new Error(`Error fetching data for ${topic}: ${response.statusText}`);
       }
       const data = await response.json();
 
@@ -114,8 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       saveProgress(topic, "lectures", true);
     } catch (error) {
       console.error(error);
-      flashcardsContainer.innerHTML =
-        "<p>Error loading the lectures. Please try again later.</p>";
+      flashcardsContainer.innerHTML = "<p>Error loading the lectures. Please try again later.</p>";
     }
   }
 
@@ -123,9 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(`data/${topic}/keywords.json`);
       if (!response.ok) {
-        throw new Error(
-          `Error fetching keywords for ${topic}: ${response.statusText}`
-        );
+        throw new Error(`Error fetching keywords for ${topic}: ${response.statusText}`);
       }
       const data = await response.json();
       flashcardsContainer.innerHTML = "";
@@ -141,8 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (error) {
       console.error(error);
-      flashcardsContainer.innerHTML =
-        "<p>Error loading the keywords. Please try again later.</p>";
+      flashcardsContainer.innerHTML = "<p>Error loading the keywords. Please try again later.</p>";
     }
   }
 
@@ -169,9 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
           '<div class="end-message"><p>Engin fleiri kort.</p><button id="back-btn">Til baka</button><button id="view-progress-btn">Skoða framfarir</button></div>';
         document.getElementById("back-btn").addEventListener("click", () => {
           flashcardsContainer.innerHTML = "";
-          document
-            .getElementById("buttons-container")
-            .scrollIntoView({ behavior: "smooth" });
+          document.getElementById("buttons-container").scrollIntoView({ behavior: "smooth" });
         });
         document.getElementById("view-progress-btn").addEventListener("click", () => {
           window.location.href = "progress.html";
@@ -187,9 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(`data/${topic}/questions.json`);
       if (!response.ok) {
-        throw new Error(
-          `Error fetching questions for ${topic}: ${response.statusText}`
-        );
+        throw new Error(`Error fetching questions for ${topic}: ${response.statusText}`);
       }
       const data = await response.json();
 
@@ -210,12 +200,10 @@ document.addEventListener("DOMContentLoaded", () => {
         firstCard.style.display = "block";
       }
 
-      // Save progress to localStorage
       saveProgress(topic, "questions", true);
     } catch (error) {
       console.error(error);
-      flashcardsContainer.innerHTML =
-        "<p>Error loading the questions. Please try again later.</p>";
+      flashcardsContainer.innerHTML = "<p>Error loading the questions. Please try again later.</p>";
     }
   }
 
@@ -234,21 +222,34 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="next-card-btn" style="display:none;">Næsta</button>
         </div>
       `;
-  
+
     const answerButtons = card.querySelectorAll(".answer-button");
     answerButtons.forEach((button, i) => {
       button.addEventListener("click", () => {
         const correctAnswer = question.answers.find(ans => ans.correct).answer;
         const isCorrect = question.answers[i].correct;
+
         saveProgress(`${index + 1}`, isCorrect, question.question, question.answers[i].answer, correctAnswer);
-        answerButtons.forEach((btn) => (btn.disabled = true));
+
+        // Highlight selected answer button and reset others
+        answerButtons.forEach((btn) => {
+          if (btn === button) {
+            btn.style.backgroundColor = "#bcd2e8"; // Set selected color
+            btn.classList.add("selected");
+          } else {
+            btn.style.backgroundColor = ""; // Reset other buttons
+            btn.classList.remove("selected");
+          }
+        });
+
         card.querySelector(".next-card-btn").style.display = "inline-block";
+
         if (isCorrect) {
           triggerConfetti();
         }
       });
     });
-  
+
     card.querySelector(".next-card-btn").addEventListener("click", () => {
       card.style.display = "none";
       const nextCard = card.nextElementSibling;
@@ -258,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showResults();
       }
     });
-  
+
     card.style.display = "none";
     return card;
   }
@@ -267,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
     let correctCount = 0;
     let incorrectCount = 0;
-  
+
     Object.keys(progress).forEach(key => {
       const { isCorrect } = progress[key];
       if (isCorrect) {
@@ -276,28 +277,24 @@ document.addEventListener("DOMContentLoaded", () => {
         incorrectCount++;
       }
     });
-  
+
     const percentage = ((correctCount / (correctCount + incorrectCount)) * 100).toFixed(2);
     flashcardsContainer.innerHTML = `<div>Þú fékkst ${percentage}% rétt.</div><div><p>Viltu skoða framfarir þínar?</p><button id="view-progress-btn">Skoða framfarir</button><button id="back-btn">Til baka</button></div>`;
-  
+
     if (percentage === "100.00") {
       triggerConfetti();
     }
-  
+
     document.getElementById("view-progress-btn").addEventListener("click", () => {
       window.location.href = "progress.html";
     });
     document.getElementById("back-btn").addEventListener("click", () => {
       flashcardsContainer.innerHTML = "";
-      document
-        .getElementById("buttons-container")
-        .scrollIntoView({ behavior: "smooth" });
+      document.getElementById("buttons-container").scrollIntoView({ behavior: "smooth" });
     });
   }
 
-  // Function to trigger confetti effect
   function triggerConfetti() {
-    // Using canvas-confetti library for confetti effect
     if (typeof confetti === "function") {
       confetti({
         particleCount: 100,
@@ -309,7 +306,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Function to shuffle an array
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -317,7 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return array;
   }
-  
+
   function saveProgress(questionId, isCorrect, question, userAnswer, correctAnswer) {
     let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
     progress[questionId] = {
@@ -328,10 +324,4 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     localStorage.setItem('userProgress', JSON.stringify(progress));
   }
-
-  // Add Flashcards as a topic to learn from
-  const flashcardsButton = document.createElement("button");
-  flashcardsButton.textContent = "Flashcards";
-  flashcardsButton.dataset.topic = "flashcards";
-  document.getElementById("buttons-container").appendChild(flashcardsButton);
 });
