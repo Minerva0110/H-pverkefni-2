@@ -8,6 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   buttons.forEach((button) => {
     button.addEventListener("click", async () => {
+      // Reset all button colors
+      buttons.forEach((btn) => {
+        btn.style.backgroundColor = ""; // Reset to default
+      });
+
+      // Set the selected button's color to #BCD2E8
+      button.style.backgroundColor = "#BCD2E8";
+
       topic = button.dataset.topic; // Get topic (e.g., 'css', 'html', 'js')
       addNavigationButtons(topic);
     });
