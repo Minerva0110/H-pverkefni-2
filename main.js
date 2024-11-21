@@ -362,6 +362,77 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return array;
   }
+  // Function to load lectures
+  async function loadLectures(topic) {
+    try {
+      const response = await fetch(`data/${topic}/lectures.json`);
+      if (!response.ok) {
+        throw new Error(
+          `Error fetching data for ${topic}: ${response.statusText}`
+        );
+      }
+      const data = await response.json();
+
+      // Clear previous content
+      flashcardsContainer.innerHTML = "";
+
+      // Render lectures data as text
+      data.lectures.forEach((lecture) => {
+        const lectureContainer = document.createElement("div");
+        lectureContainer.className = "lecture-container";
+        lectureContainer.innerHTML = `<h3>${lecture.title}</h3>`;
+
+        lecture.content.forEach((contentItem) => {
+          if (contentItem.type === "heading") {
+            lectureContainer.innerHTML += `<h4>${contentItem.data}</h4>`;
+          } else if (contentItem.type === "text") {
+            lectureContainer.innerHTML += `<p>${contentItem.data}</p>`;
+          } else if (contentItem.type === "quote") {
+            lectureContainer.innerHTML += `<blockquote>${
+              contentItem.data
+            }<br><small>${contentItem.attribute || ""}</small></blockquote>`;
+          } else if (contentItem.type === "image") {
+            lectureContainer.innerHTML += `<div class="image-container"><img src="${
+              contentItem.data
+            }" alt="${contentItem.caption || ""}" class="full-width-image"><p>${
+              contentItem.caption || ""
+            }</p></div>`;
+          } else if (contentItem.type === "list") {
+            lectureContainer.innerHTML += `<ul>${contentItem.data
+              .map((item) => `<li>${item}</li>`)
+              .join("")}</ul>`;
+          }
+        });
+
+        flashcardsContainer.appendChild(lectureContainer);
+      });
+
+      // Add buttons at the bottom
+      const buttonsContainer = document.createElement("div");
+      buttonsContainer.className = "lecture-footer-buttons";
+      buttonsContainer.innerHTML = `
+        <button id="home-btn">Heim</button>
+        <button id="questions-btn">Tilbúin/n í Spurningar</button>
+    `;
+
+      flashcardsContainer.appendChild(buttonsContainer);
+
+      // Add event listeners to the new buttons
+      document.getElementById("home-btn").addEventListener("click", () => {
+        // Reload the page to simulate a reset
+        location.reload(); // This will reload the entire page
+      });
+
+      document.getElementById("questions-btn").addEventListener("click", () => {
+        // Load questions for the current topic
+        loadQuestions(topic);
+      });
+    } catch (error) {
+      console.error(error);
+      flashcardsContainer.innerHTML =
+        "<p>Error loading the lectures. Please try again later.</p>";
+    }
+  }
 
   // Function to trigger confetti
   function triggerConfetti() {
