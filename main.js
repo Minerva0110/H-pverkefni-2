@@ -2,11 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll("#buttons-container button");
   const flashcardsContainer = document.getElementById("flashcards-container");
   let correctAnswers = 0;
+  let incorrectAnswers = 0;
+  let topic = "";
   let totalQuestions = 0;
 
   buttons.forEach((button) => {
     button.addEventListener("click", async () => {
-      const topic = button.dataset.topic; // Get topic (e.g., 'css', 'html', 'js')
+      topic = button.dataset.topic; // Get topic (e.g., 'css', 'html', 'js')
       addNavigationButtons(topic);
     });
   });
@@ -90,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Save progress to localStorage
-      saveProgress(topic, "lectures", true);
+      saveProgress(topic, true);
     } catch (error) {
       console.error(error);
       flashcardsContainer.innerHTML =
@@ -146,6 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Clear previous content
       flashcardsContainer.innerHTML = "";
       correctAnswers = 0;
+      incorrectAnswers = 0;
       totalQuestions = data.questions.length;
 
       // Shuffle questions
@@ -163,92 +166,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (firstCard) {
         firstCard.style.display = "block";
       }
-
-      // Save progress to localStorage
-      saveProgress(topic, "questions", true);
     } catch (error) {
       console.error(error);
       flashcardsContainer.innerHTML =
         "<p>Error loading the questions. Please try again later.</p>";
     }
-  }
-
-  function displayProgress() {
-    let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
-    const progressList = document.getElementById("progress-list");
-
-    if (!progressList) {
-      console.error("Framvindulistinn fannst ekki!");
-      return;
-    }
-
-    progressList.innerHTML = ""; // Hreinsar listann
-    let incorrectList = []; // Lista yfir spurningar sem þarf að æfa betur
-
-    Object.keys(progress).forEach((questionId) => {
-      const listItem = document.createElement("li");
-      const isCorrect = progress[questionId];
-
-      if (isCorrect) {
-        listItem.textContent = `Spurning ${questionId}: Rétt`;
-        listItem.classList.add("correct");
-      } else {
-        listItem.textContent = `Spurning ${questionId}: Rangt (æfa betur)`;
-        listItem.classList.add("incorrect");
-        incorrectList.push(questionId); // Bætir við í æfa betur lista
-      }
-
-      progressList.appendChild(listItem);
-    });
-
-    // Birta æfa betur lista ef einhverjar rangar spurningar eru
-    if (incorrectList.length > 0) {
-      const betterPracticeSection = document.createElement("div");
-      betterPracticeSection.className = "better-practice";
-      betterPracticeSection.innerHTML = `
-            <h3>Spurningar sem þú ættir að æfa betur:</h3>
-            <ul>
-                ${incorrectList.map((q) => `<li>Spurning ${q}</li>`).join("")}
-            </ul>
-        `;
-      progressList.parentElement.appendChild(betterPracticeSection);
-    }
-  }
-  // Function to create a flashcard for keywords
-  function createFlashcard(item) {
-    const card = document.createElement("div");
-    card.className = "flashcard card";
-    card.innerHTML = `
-        <div class="card-content">
-          <h3>${item.title}</h3>
-          <p>${
-            item.content[0]?.data || item.content || "No content available"
-          }</p>
-        </div>
-        <div class="card-footer">
-          <button class="next-card-btn">Næsta</button>
-        </div>
-      `;
-
-    card.querySelector(".next-card-btn").addEventListener("click", () => {
-      card.style.display = "none";
-      const nextCard = card.nextElementSibling;
-      if (nextCard && nextCard.classList.contains("flashcard")) {
-        nextCard.style.display = "block";
-      } else {
-        flashcardsContainer.innerHTML =
-          '<div class="end-message"><p>Engin fleiri kort.</p><button id="back-btn">Til baka</button></div>';
-        document.getElementById("back-btn").addEventListener("click", () => {
-          flashcardsContainer.innerHTML = "";
-          document
-            .getElementById("buttons-container")
-            .scrollIntoView({ behavior: "smooth" });
-        });
-      }
-    });
-
-    card.style.display = "none";
-    return card;
   }
 
   // Function to create a question card
@@ -278,21 +200,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const answerButtons = card.querySelectorAll(".answer-button");
     answerButtons.forEach((button) => {
-     button.addEventListener("click", () => {
-    const answerIndex = parseInt(button.dataset.answerIndex, 10);
-    const isCorrect = question.answers[answerIndex].correct;
+      button.addEventListener("click", () => {
+        const answerIndex = parseInt(button.dataset.answerIndex, 10);
+        const isCorrect = question.answers[answerIndex].correct;
 
-    // Vista framvindu fyrir þessa spurningu
-    saveProgress(`question-${index + 1}`, isCorrect);
+        // Vista framvindu fyrir þessa spurningu
+        saveProgress(topic, isCorrect);
 
-    if (isCorrect) {
-        correctAnswers++;
-        triggerConfetti();
-    }
-    answerButtons.forEach((btn) => (btn.disabled = true));
-    card.querySelector(".next-card-btn").style.display = "inline-block";
-});
-
+        if (isCorrect) {
+          correctAnswers++;
+          triggerConfetti();
+        } else {
+          incorrectAnswers++;
+        }
+        answerButtons.forEach((btn) => (btn.disabled = true));
+        card.querySelector(".next-card-btn").style.display = "inline-block";
+      });
     });
 
     card.querySelector(".next-card-btn").addEventListener("click", () => {
@@ -302,7 +225,18 @@ document.addEventListener("DOMContentLoaded", () => {
         nextCard.style.display = "block";
       } else {
         const score = Math.round((correctAnswers / totalQuestions) * 100);
-        flashcardsContainer.innerHTML = `<div class="end-message"><p>Þú fékkst ${score}% rétt.</p><button id="back-btn">Til baka</button></div>`;
+        flashcardsContainer.innerHTML = `
+          <div class="end-message">
+            <p>Þú fékkst ${score}% rétt.</p>
+            <p>Viltu sjá framfarir þínar?</p>
+            <button id="progress-btn">Framfarir</button>
+            <button id="back-btn">Til baka</button>
+          </div>`;
+        document
+          .getElementById("progress-btn")
+          .addEventListener("click", () => {
+            window.location.href = "progress.html";
+          });
         document.getElementById("back-btn").addEventListener("click", () => {
           flashcardsContainer.innerHTML = "";
           document
@@ -314,56 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.style.display = "none";
     return card;
-  }
-
-  // Geymir framvindu notandans í localStorage
-  function saveProgress(questionId, isCorrect) {
-    let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
-    progress[questionId] = isCorrect; // Vista hvort svar er rétt
-    localStorage.setItem("userProgress", JSON.stringify(progress));
-  }
-
-  // Sækir framvindu og birtir hana á progress.html
-  function displayProgress() {
-    let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
-    const progressList = document.getElementById("progress-list");
-
-    if (!progressList) {
-      console.error("Framvindulistinn fannst ekki!");
-      return;
-    }
-
-    progressList.innerHTML = ""; // Hreinsar listann
-    let correctAnswers = 0;
-    let incorrectAnswers = 0;
-
-    // Fer yfir allar spurningar og flokkar réttar og rangar
-    Object.keys(progress).forEach((questionId) => {
-      const listItem = document.createElement("li");
-      const isCorrect = progress[questionId];
-
-      if (isCorrect) {
-        listItem.textContent = `Spurning ${questionId}: Rétt`;
-        listItem.classList.add("correct");
-        correctAnswers++;
-      } else {
-        listItem.textContent = `Spurning ${questionId}: Rangt (æfa betur)`;
-        listItem.classList.add("incorrect");
-        incorrectAnswers++;
-      }
-
-      progressList.appendChild(listItem);
-    });
-
-    // Bætir yfirliti við efst í framvinduna
-    const summary = document.createElement("p");
-    summary.textContent = `Rétt svör: ${correctAnswers}, Röng svör: ${incorrectAnswers}`;
-    progressList.parentElement.insertBefore(summary, progressList);
-  }
-
-  // Upphafssímtal þegar progress.html er opnað
-  if (window.location.pathname.includes("progress.html")) {
-    window.onload = displayProgress;
   }
 
   // Function to trigger confetti effect
@@ -390,14 +274,48 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Function to save progress to localStorage
-  function saveProgress(topic, type, status) {
-    const progressKey = `${topic}-${type}`;
-    localStorage.setItem(progressKey, JSON.stringify(status));
+  function saveProgress(topic, isCorrect) {
+    const date = new Date().toLocaleDateString("is-IS");
+    const progressKey = `${date}-${topic}`;
+    let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
+    if (!progress[progressKey]) {
+      progress[progressKey] = { correct: 0, incorrect: 0 };
+    }
+    if (isCorrect) {
+      progress[progressKey].correct++;
+    } else {
+      progress[progressKey].incorrect++;
+    }
+    localStorage.setItem("userProgress", JSON.stringify(progress));
   }
 
-  // Function to load progress from localStorage
-  function loadProgress(topic, type) {
-    const progressKey = `${topic}-${type}`;
-    return JSON.parse(localStorage.getItem(progressKey));
+  // Upphafsímtal þegar progress.html er opnað
+  if (window.location.pathname.includes("progress.html")) {
+    window.onload = displayProgress;
+  }
+
+  // Function to display progress in progress.html
+  function displayProgress() {
+    let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
+    const progressList = document.getElementById("progress-list");
+
+    if (!progressList) {
+      console.error("Framvindulistinn fannst ekki!");
+      return;
+    }
+
+    progressList.innerHTML = ""; // Hreinsar listann
+
+    // Birta framvinduna fyrir hvern dag
+    Object.keys(progress).forEach((progressKey) => {
+      const date = progressKey.split("-")[0];
+      const topic = progressKey.split("-").slice(1).join("-");
+      const { correct, incorrect } = progress[progressKey];
+      const total = correct + incorrect;
+      const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+      const listItem = document.createElement("li");
+      listItem.textContent = `${date} (${topic}): Rétt svör: ${correct}, Röng svör: ${incorrect}, Prósenta: ${percentage}%`;
+      progressList.appendChild(listItem);
+    });
   }
 });
