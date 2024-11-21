@@ -1,25 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framfarir</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div id="app">
-      <header>
-        <span class="header-emoji">📊</span>
-        <h1>Framfarir þínar</h1>
-      </header>
-      <main id="main-content">
-        <div id="progress-container"></div>
-      </main>
-      <footer>
-        <a href="index.html" id="back-link" class="footer-btn">Til baka</a>
-        <p>&copy; 2024 Vefforritunarvefurinn. Allur réttur áskilinn.</p>
-      </footer>
-    </div>
-    <script src="progress.js" type="module"></script>
-  </body>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Framfærir</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Framfærir</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Hér eru framærir þínar!</h2>
+            <p>Hér geturu séð framfærir þínar yfir hvern dag.</p>
+            <ul id="progress-list">
+            </ul>
+            <button id="home-btn">Heim</button>
+        </section>
+        <script>
+            document.getElementById('home-btn').addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+        </script>
+    </main>
+    <footer>
+        <p>&copy; 2024 Flashcard Website</p>
+    </footer>
+    <script src="main.js"></script>
+    <script src="progress.js"></script>
+</body>
 </html>

@@ -130,10 +130,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
       flashcardsContainer.innerHTML = "";
 
-      data.keywords.forEach((keyword, index) => {
-        const card = createKeywordCard(keyword, index, data.keywords.length);
-        flashcardsContainer.appendChild(card);
+      data.keywords.forEach((keyword) => {
+        const keywordElement = createFlashcard(keyword);
+        flashcardsContainer.appendChild(keywordElement);
       });
+
+      const firstCard = flashcardsContainer.querySelector(".flashcard");
+      if (firstCard) {
+        firstCard.style.display = "block";
+      }
     } catch (error) {
       console.error(error);
       flashcardsContainer.innerHTML =
@@ -141,40 +146,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function createKeywordCard(keyword, index, totalKeywords) {
+  function createFlashcard(item) {
     const card = document.createElement("div");
     card.className = "flashcard card";
     card.innerHTML = `
-      <div class="card-content">
-        <h3>${keyword.title}</h3>
-        <p>${keyword.content}</p>
-      </div>
-      <div class="card-footer">
-        ${index > 0 ? `<button class="prev-card-btn">Til baka</button>` : ""}
-        ${index < totalKeywords - 1 ? `<button class="next-card-btn">Næsta</button>` : ""}
-      </div>
-    `;
+        <div class="card-content">
+          <h3>${item.title}</h3>
+          <p>${item.content[0]?.data || item.content || "No content available"}</p>
+        </div>
+        <div class="card-footer">
+          <button class="next-card-btn">Næsta</button>
+        </div>
+      `;
 
-    if (index > 0) {
-      card.querySelector(".prev-card-btn").addEventListener("click", () => {
-        showKeyword(index - 1);
-      });
-    }
-
-    if (index < totalKeywords - 1) {
-      card.querySelector(".next-card-btn").addEventListener("click", () => {
-        showKeyword(index + 1);
-      });
-    }
-
-    return card;
-  }
-
-  function showKeyword(index) {
-    const keywords = document.querySelectorAll(".flashcard.card");
-    keywords.forEach((keyword, i) => {
-      keyword.style.display = i === index ? "block" : "none";
+    card.querySelector(".next-card-btn").addEventListener("click", () => {
+      card.style.display = "none";
+      const nextCard = card.nextElementSibling;
+      if (nextCard && nextCard.classList.contains("flashcard")) {
+        nextCard.style.display = "block";
+      } else {
+        flashcardsContainer.innerHTML =
+          '<div class="end-message"><p>Engin fleiri kort.</p><button id="back-btn">Til baka</button><button id="view-progress-btn">Skoða framfarir</button></div>';
+        document.getElementById("back-btn").addEventListener("click", () => {
+          flashcardsContainer.innerHTML = "";
+          document
+            .getElementById("buttons-container")
+            .scrollIntoView({ behavior: "smooth" });
+        });
+        document.getElementById("view-progress-btn").addEventListener("click", () => {
+          window.location.href = "progress.html";
+        });
+      }
     });
+
+    card.style.display = "none";
+    return card;
   }
 
   async function loadQuestions(topic) {
@@ -311,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return array;
   }
-
+  
   function saveProgress(questionId, isCorrect, question, userAnswer, correctAnswer) {
     let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
     progress[questionId] = {
