@@ -5,21 +5,25 @@ document.addEventListener("DOMContentLoaded", () => {
   let incorrectAnswers = 0;
   let topic = "";
   let totalQuestions = 0;
-
+ 
+ 
   buttons.forEach((button) => {
     button.addEventListener("click", async () => {
       // Reset all button colors
       buttons.forEach((btn) => {
         btn.style.backgroundColor = ""; // Reset to default
       });
-
-      button.style.backgroundColor = "#5A7184";
-
+ 
+ 
+      button.style.backgroundColor = "#BCD2E8";
+ 
+ 
       topic = button.dataset.topic; // Get topic (e.g., 'css', 'html', 'js')
       addNavigationButtons(topic);
     });
   });
-
+ 
+ 
   // Function to add navigation buttons
   function addNavigationButtons(topic) {
     // Clear previous navigation buttons if any
@@ -27,7 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (existingNav) {
       existingNav.remove();
     }
-
+ 
+ 
     const navigationContainer = document.createElement("div");
     navigationContainer.className = "navigation-buttons";
     navigationContainer.innerHTML = `
@@ -37,21 +42,25 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     flashcardsContainer.innerHTML = ""; // Clear previous content
     flashcardsContainer.appendChild(navigationContainer);
-
+ 
+ 
     // Add event listeners to the newly created buttons
     document.getElementById("show-lectures").addEventListener("click", () => {
       loadLectures(topic);
     });
-
+ 
+ 
     document.getElementById("show-keywords").addEventListener("click", () => {
       loadKeywords(topic);
     });
-
+ 
+ 
     document.getElementById("show-questions").addEventListener("click", () => {
       loadQuestions(topic);
     });
   }
-
+ 
+ 
   // Function to load lectures
   async function loadLectures(topic) {
     try {
@@ -62,16 +71,19 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
       const data = await response.json();
-
+ 
+ 
       // Clear previous content
       flashcardsContainer.innerHTML = "";
-
+ 
+ 
       // Render lectures data as text
       data.lectures.forEach((lecture) => {
         const lectureContainer = document.createElement("div");
         lectureContainer.className = "lecture-container";
         lectureContainer.innerHTML = `<h3>${lecture.title}</h3>`;
-
+ 
+ 
         lecture.content.forEach((contentItem) => {
           if (contentItem.type === "heading") {
             lectureContainer.innerHTML += `<h4>${contentItem.data}</h4>`;
@@ -93,18 +105,19 @@ document.addEventListener("DOMContentLoaded", () => {
               .join("")}</ul>`;
           }
         });
-
+ 
+ 
         flashcardsContainer.appendChild(lectureContainer);
       });
-
-      saveProgress(topic, "lectures", true);
+ 
     } catch (error) {
       console.error(error);
       flashcardsContainer.innerHTML =
         "<p>Error loading the lectures. Please try again later.</p>";
     }
   }
-
+ 
+ 
   // Function to load keywords
   async function loadKeywords(topic) {
     try {
@@ -115,30 +128,33 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
       const data = await response.json();
-
+ 
+ 
       // Clear previous content
       flashcardsContainer.innerHTML = "";
-
+ 
+ 
       data.keywords.forEach((keyword) => {
         const keywordElement = createFlashcard(keyword);
         flashcardsContainer.appendChild(keywordElement);
       });
-
+ 
+ 
       // Show the first card
       const firstCard = flashcardsContainer.querySelector(".flashcard");
       if (firstCard) {
         firstCard.style.display = "block";
       }
-
-      // Update progress using just the topic
-      saveProgress(topic, true);
+ 
+ 
     } catch (error) {
       console.error(error);
       flashcardsContainer.innerHTML =
         "<p>Error loading the keywords. Please try again later.</p>";
     }
   }
-
+ 
+ 
   // Function to load questions
   async function loadQuestions(topic) {
     try {
@@ -149,22 +165,26 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
       const data = await response.json();
-
+ 
+ 
       // Clear previous content
       flashcardsContainer.innerHTML = "";
       correctAnswers = 0;
       incorrectAnswers = 0;
       totalQuestions = data.questions.length;
-
+ 
+ 
       // Shuffle questions
       data.questions = shuffleArray(data.questions);
-
+ 
+ 
       data.questions.forEach((question, index) => {
         question.answers = shuffleArray(question.answers);
         const card = createQuestionCard(question, index);
         flashcardsContainer.appendChild(card);
       });
-
+ 
+ 
       // Show the first card
       const firstCard = flashcardsContainer.querySelector(".flashcard");
       if (firstCard) {
@@ -176,7 +196,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "<p>Error loading the questions. Please try again later.</p>";
     }
   }
-
+ 
+ 
   // Function to create a flashcard for keywords
   function createFlashcard(item) {
     const card = document.createElement("div");
@@ -211,7 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.display = "none";
     return card;
   }
-
+ 
+ 
   // Function to create a question card
   function createQuestionCard(question, index) {
     const card = document.createElement("div");
@@ -236,22 +258,25 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="next-card-btn" style="display:none;">Næsta</button>
         </div>
       `;
-
+ 
+ 
     const answerButtons = card.querySelectorAll(".answer-button");
     answerButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const answerIndex = parseInt(button.dataset.answerIndex, 10);
         const isCorrect = question.answers[answerIndex].correct;
-
+ 
+ 
         // Change button colors and reset others
         answerButtons.forEach((btn) => {
           if (btn === button) {
-            btn.style.backgroundColor = "#5A7184"; // Selected color
+            btn.style.backgroundColor = "#bcd2e8"; // Selected color
           } else {
             btn.style.backgroundColor = ""; // Reset color
           }
         });
-
+ 
+ 
         saveProgress(`question-${index + 1}`, isCorrect, topic);
         if (isCorrect) {
           correctAnswers++;
@@ -262,7 +287,8 @@ document.addEventListener("DOMContentLoaded", () => {
         card.querySelector(".next-card-btn").style.display = "inline-block";
       });
     });
-
+ 
+ 
     card.querySelector(".next-card-btn").addEventListener("click", () => {
       card.style.display = "none";
       const nextCard = card.nextElementSibling;
@@ -277,13 +303,15 @@ document.addEventListener("DOMContentLoaded", () => {
             <button id="progress-btn">Framfarir</button>
             <button id="back-btn">Til baka</button>
           </div>`;
-
+ 
+ 
         document
           .getElementById("progress-btn")
           .addEventListener("click", () => {
             window.location.href = "progress.html";
           });
-
+ 
+ 
         document.getElementById("back-btn").addEventListener("click", () => {
           flashcardsContainer.innerHTML = "";
           document
@@ -292,30 +320,36 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
-
+ 
+ 
     card.style.display = "none";
     return card;
   }
-
+ 
+ 
   // Geymir framvindu notandans í localStorage
   function saveProgress(questionId, isCorrect, topic) {
     const date = new Date().toLocaleDateString("is-IS");
     const progressKey = `${date}-${topic}`;
     let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
-
+ 
+ 
     if (!progress[progressKey]) {
       progress[progressKey] = { correct: 0, incorrect: 0 };
     }
-
+ 
+ 
     if (isCorrect) {
       progress[progressKey].correct++;
     } else {
       progress[progressKey].incorrect++;
     }
-
+ 
+ 
     localStorage.setItem("userProgress", JSON.stringify(progress));
   }
-
+ 
+ 
   // Function to display progress in progress.html
   function displayProgress() {
     let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
@@ -324,9 +358,11 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Framvindulistinn fannst ekki!");
       return;
     }
-
+ 
+ 
     progressList.innerHTML = ""; // Clear existing progress
-
+ 
+ 
     // Iterate over each progress entry and filter valid ones
     Object.keys(progress).forEach((progressKey) => {
       const [date, topic] = progressKey.split("-");
@@ -340,19 +376,22 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         const total = correct + incorrect;
         const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
-
+ 
+ 
         const listItem = document.createElement("li");
         listItem.textContent = `${date} (${topic}): Rétt svör: ${correct}, Röng svör: ${incorrect}, Prósenta: ${percentage}%`;
         progressList.appendChild(listItem);
       }
     });
   }
-
+ 
+ 
   // Check if the page is progress.html to display progress
   if (window.location.pathname.includes("progress.html")) {
     window.onload = displayProgress;
   }
-
+ 
+ 
   // Function to shuffle an array
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -371,16 +410,19 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
       const data = await response.json();
-
+ 
+ 
       // Clear previous content
       flashcardsContainer.innerHTML = "";
-
+ 
+ 
       // Render lectures data as text
       data.lectures.forEach((lecture) => {
         const lectureContainer = document.createElement("div");
         lectureContainer.className = "lecture-container";
         lectureContainer.innerHTML = `<h3>${lecture.title}</h3>`;
-
+ 
+ 
         lecture.content.forEach((contentItem) => {
           if (contentItem.type === "heading") {
             lectureContainer.innerHTML += `<h4>${contentItem.data}</h4>`;
@@ -402,29 +444,31 @@ document.addEventListener("DOMContentLoaded", () => {
               .join("")}</ul>`;
           }
         });
-
+ 
+ 
         flashcardsContainer.appendChild(lectureContainer);
       });
+ 
+ 
       // Add buttons at the bottom
       const buttonsContainer = document.createElement("div");
       buttonsContainer.className = "lecture-footer-buttons";
       buttonsContainer.innerHTML = `
-       <button id="home-btn">Heim</button>
-       <button id="questions-btn">Tilbúin/n í Spurningar</button>
-   `;
-
+        <button id="home-btn">Heim</button>
+        <button id="questions-btn">Tilbúin/n í Spurningar</button>
+    `;
+ 
+ 
       flashcardsContainer.appendChild(buttonsContainer);
-
+ 
+ 
       // Add event listeners to the new buttons
       document.getElementById("home-btn").addEventListener("click", () => {
-        // Redirect to the home page or main view
-        document
-          .getElementById("buttons-container")
-          .scrollIntoView({ behavior: "smooth" });
+        location.reload();
       });
-
+ 
+ 
       document.getElementById("questions-btn").addEventListener("click", () => {
-        // Load questions for the current topic
         loadQuestions(topic);
       });
     } catch (error) {
@@ -433,7 +477,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "<p>Error loading the lectures. Please try again later.</p>";
     }
   }
-
+ 
+ 
   // Function to trigger confetti
   function triggerConfetti() {
     if (typeof confetti === "function") {
@@ -446,4 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Confetti!");
     }
   }
-});
+ });
+ 
+ 
+ 

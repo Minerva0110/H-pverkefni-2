@@ -29,6 +29,7 @@ body {
   background-color: var(--body-bg-color);
   margin: 0 auto;
   padding: var(--spacing);
+  padding-bottom: 80px;
   max-width: var(--max-width);
   min-height: 100vh;
   border: 1px solid #ccc;
