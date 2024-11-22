@@ -9,24 +9,22 @@ document.addEventListener("DOMContentLoaded", () => {
  
   buttons.forEach((button) => {
     button.addEventListener("click", async () => {
-      // Reset all button colors
       buttons.forEach((btn) => {
-        btn.style.backgroundColor = ""; // Reset to default
+        btn.style.backgroundColor = "";
       });
  
  
-      button.style.backgroundColor = "#BCD2E8";
+      button.style.backgroundColor = "#555555";
  
  
-      topic = button.dataset.topic; // Get topic (e.g., 'css', 'html', 'js')
+      topic = button.dataset.topic; 
       addNavigationButtons(topic);
     });
   });
  
- 
-  // Function to add navigation buttons
+
   function addNavigationButtons(topic) {
-    // Clear previous navigation buttons if any
+  
     const existingNav = document.querySelector(".navigation-buttons");
     if (existingNav) {
       existingNav.remove();
@@ -40,11 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
         <button id="show-keywords">Lykilhugtök</button>
         <button id="show-questions">Spurningar</button>
       `;
-    flashcardsContainer.innerHTML = ""; // Clear previous content
+    flashcardsContainer.innerHTML = ""; 
     flashcardsContainer.appendChild(navigationContainer);
  
  
-    // Add event listeners to the newly created buttons
     document.getElementById("show-lectures").addEventListener("click", () => {
       loadLectures(topic);
     });
@@ -61,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  
  
-  // Function to load lectures
   async function loadLectures(topic) {
     try {
       const response = await fetch(`data/${topic}/lectures.json`);
@@ -72,12 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const data = await response.json();
  
- 
-      // Clear previous content
+
       flashcardsContainer.innerHTML = "";
  
  
-      // Render lectures data as text
       data.lectures.forEach((lecture) => {
         const lectureContainer = document.createElement("div");
         lectureContainer.className = "lecture-container";
@@ -118,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  
  
-  // Function to load keywords
   async function loadKeywords(topic) {
     try {
       const response = await fetch(`data/${topic}/keywords.json`);
@@ -130,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
  
  
-      // Clear previous content
       flashcardsContainer.innerHTML = "";
  
  
@@ -140,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
  
  
-      // Show the first card
       const firstCard = flashcardsContainer.querySelector(".flashcard");
       if (firstCard) {
         firstCard.style.display = "block";
@@ -155,7 +146,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  
  
-  // Function to load questions
   async function loadQuestions(topic) {
     try {
       const response = await fetch(`data/${topic}/questions.json`);
@@ -167,14 +157,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
  
  
-      // Clear previous content
       flashcardsContainer.innerHTML = "";
       correctAnswers = 0;
       incorrectAnswers = 0;
       totalQuestions = data.questions.length;
  
  
-      // Shuffle questions
       data.questions = shuffleArray(data.questions);
  
  
@@ -185,7 +173,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
  
  
-      // Show the first card
       const firstCard = flashcardsContainer.querySelector(".flashcard");
       if (firstCard) {
         firstCard.style.display = "block";
@@ -198,7 +185,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  
  
-  // Function to create a flashcard for keywords
   function createFlashcard(item) {
     const card = document.createElement("div");
     card.className = "flashcard card";
@@ -267,12 +253,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const isCorrect = question.answers[answerIndex].correct;
  
  
-        // Change button colors and reset others
         answerButtons.forEach((btn) => {
           if (btn === button) {
-            btn.style.backgroundColor = "#bcd2e8"; // Selected color
+            btn.style.backgroundColor = "#555555"; 
           } else {
-            btn.style.backgroundColor = ""; // Reset color
+            btn.style.backgroundColor = ""; 
           }
         });
  
@@ -350,49 +335,53 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  
  
-  // Function to display progress in progress.html
-  function displayProgress() {
-    let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
-    const progressList = document.getElementById("progress-list");
-    if (!progressList) {
-      console.error("Framvindulistinn fannst ekki!");
-      return;
-    }
- 
- 
-    progressList.innerHTML = ""; // Clear existing progress
- 
- 
-    // Iterate over each progress entry and filter valid ones
-    Object.keys(progress).forEach((progressKey) => {
-      const [date, topic] = progressKey.split("-");
-      const { correct, incorrect } = progress[progressKey];
-      if (
-        typeof correct !== "undefined" &&
-        typeof incorrect !== "undefined" &&
-        topic &&
-        !isNaN(correct) &&
-        !isNaN(incorrect)
-      ) {
-        const total = correct + incorrect;
-        const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
- 
- 
-        const listItem = document.createElement("li");
-        listItem.textContent = `${date} (${topic}): Rétt svör: ${correct}, Röng svör: ${incorrect}, Prósenta: ${percentage}%`;
-        progressList.appendChild(listItem);
-      }
-    });
+function displayProgress() {
+  let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
+  const progressList = document.getElementById("progress-list");
+  if (!progressList) {
+    console.error("Framvindulistinn fannst ekki!");
+    return;
   }
- 
- 
-  // Check if the page is progress.html to display progress
+
+  progressList.innerHTML = ""; 
+
+  const validTopics = ["html", "css", "js"];
+  const displayedTopics = new Set(); 
+
+  Object.keys(progress).forEach((progressKey) => {
+    const [date, topic] = progressKey.split("-");
+    const { correct, incorrect } = progress[progressKey];
+
+    if (
+      validTopics.includes(topic) &&
+      !displayedTopics.has(topic) &&
+      typeof correct !== "undefined" &&
+      typeof incorrect !== "undefined" &&
+      !isNaN(correct) &&
+      !isNaN(incorrect)
+    ) {
+      const total = correct + incorrect;
+      const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+      const listItem = document.createElement("li");
+      listItem.textContent = `${date} (${topic}): Rétt svör: ${correct}, Röng svör: ${incorrect}, Prósenta: ${percentage}%`;
+      progressList.appendChild(listItem);
+
+      displayedTopics.add(topic);
+    }
+  });
+
+  if (displayedTopics.size === 0) {
+    progressList.innerHTML = "<p>Engar framfærir fyrir HTML, CSS eða JS.</p>";
+  }
+}
+
+
   if (window.location.pathname.includes("progress.html")) {
     window.onload = displayProgress;
   }
  
- 
-  // Function to shuffle an array
+
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -400,7 +389,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return array;
   }
-  // Function to load lectures
+ 
+  
   async function loadLectures(topic) {
     try {
       const response = await fetch(`data/${topic}/lectures.json`);
@@ -411,12 +401,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const data = await response.json();
  
- 
-      // Clear previous content
+
       flashcardsContainer.innerHTML = "";
  
  
-      // Render lectures data as text
+
       data.lectures.forEach((lecture) => {
         const lectureContainer = document.createElement("div");
         lectureContainer.className = "lecture-container";
@@ -450,7 +439,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
  
  
-      // Add buttons at the bottom
       const buttonsContainer = document.createElement("div");
       buttonsContainer.className = "lecture-footer-buttons";
       buttonsContainer.innerHTML = `
@@ -461,8 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
  
       flashcardsContainer.appendChild(buttonsContainer);
  
- 
-      // Add event listeners to the new buttons
+
       document.getElementById("home-btn").addEventListener("click", () => {
         location.reload();
       });
@@ -479,7 +466,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  
  
-  // Function to trigger confetti
   function triggerConfetti() {
     if (typeof confetti === "function") {
       confetti({

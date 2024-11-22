@@ -80,6 +80,8 @@ button {
 button:active {
   box-shadow: 0 1px 3px rgb(0 0 0 / 20%) inset;
   transform: scale(0.98);
+  background-color: #555555; 
+  color: #ffffff; 
 }
 
 button:hover {
@@ -331,8 +333,6 @@ body {
 #questions-btn {
   padding: 10px 20px;
   background-color: var(--button-bg-color);
-  color: white;
-  border: 1px solid #ccc;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
