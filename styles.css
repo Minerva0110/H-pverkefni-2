@@ -11,20 +11,16 @@ html {
 :root {
   --spacing: 1rem;
   --max-width: 56rem;
-
   --font-size-button: 1rem;
-  --font-family: "Poppins", -system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+  --font-family: "Poppins", -system-ui, -apple-system, blinkmacsystemfont,
+    "Segoe UI", roboto, oxygen, ubuntu, cantarell, "Open Sans", "Helvetica Neue",
     sans-serif;
-
   --color-light-gray: #f0f0f0;
   --color-background-zebra: var(--color-light-gray);
-
   --button-bg-color: #2e5984;
   --button-bg-hover-color: #bcd2e8;
   --button-back-color: #22223b;
   --header-bg-color: #bcd2e8;
-
   --body-bg-color: #f0efeb;
   --outer-bg-color: #bcd2e8;
 }
@@ -46,7 +42,7 @@ body {
   padding: var(--spacing);
   background-color: var(--body-bg-color);
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
 }
 
 input,
@@ -64,7 +60,7 @@ button {
 }
 
 button {
-  padding: 0.25rem 0.5rem;
+  padding: 10px 20px;
   background-color: var(--button-bg-color);
   color: white;
   border: 1px solid #ccc;
@@ -73,16 +69,39 @@ button {
   transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
-button:hover {
-  background-color: var(--button-bg-hover-color);
-  color: var(--text-hover-color);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
+#buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 button:active {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%) inset;
   transform: scale(0.98);
+}
+
+button:hover {
+  background-color: var(--button-bg-hover-color);
+  color: var(--text-hover-color);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+  transform: translateY(-2px);
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap; 
+  margin-top: 20px;
+}
+
+button:hover,
+.navigation-buttons button:hover,
+.card-footer button:hover {
+  background-color: var(--button-bg-hover-color);
+  color: var(--text-hover-color);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+  transform: translateY(-2px);
 }
 
 footer {
@@ -97,13 +116,13 @@ footer {
   right: 0;
   width: 100%;
   height: 60px;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -2px 5px rgb(0 0 0 / 10%);
   gap: 100px;
 }
 
 .footer-btn {
   background-color: #f2c492;
-  color: #000000;;
+  color: #000;;
   padding: 5px 15px;
   text-decoration: none;
   border-radius: 4px;
@@ -137,7 +156,7 @@ header {
   background-color: var(--header-bg-color);
   padding: 2rem;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,20 +175,13 @@ h2 {
   border: 1px solid #ddd;
   padding: 25px;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-#buttons-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
 }
 
 .flashcard {
-  background-color: #ffffff;
+  background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 10%);
   margin: 20px auto;
   padding: 20px;
   max-width: 100%;
@@ -178,7 +190,7 @@ h2 {
 }
 
 .flashcard:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 12px rgb(0 0 0 / 20%);
   transform: translateY(-5px);
 }
 
@@ -211,69 +223,6 @@ h2 {
   justify-content: space-between;
 }
 
-.flip-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
-}
-
-.flashcard.flipped .flip-card-inner {
-  transform: rotateY(180deg);
-}
-
-.flip-card-front,
-.flip-card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2em;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-
-.flip-card-front {
-  background: #ffffff; /* White background for the front */
-}
-
-.flip-card-back {
-  transform: rotateY(180deg);
-  background: #f8f9fa; /* Light background for the back */
-}
-
-.navigation-buttons {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-}
-
-.navigation-buttons button,
-.card-footer button,
-button {
-  padding: 10px 20px;
-  background-color: var(--button-bg-color);
-  color: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
-}
-
-.navigation-buttons button:hover,
-.card-footer button:hover,
-button:hover {
-  background-color: var(--button-bg-hover-color);
-  color: var(--text-hover-color);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
-}
-
 .back-card-btn {
   background-color: var(--button-back-color);
   display: inline-block;
@@ -284,24 +233,24 @@ button:hover {
 .back-card-btn:hover {
   background-color: var(--button-bg-hover-color);
   color: var(--text-hover-color);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
   transform: translateY(-2px);
 }
 
 #progress-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr; /* Four columns for question, user's answer, correct answer, and status */
-  gap: 15px; /* Spacing between grid items */
+  grid-template-columns: 1fr 1fr 1fr 1fr; 
+  gap: 15px; 
   padding: 20px;
-  background-color: #f9f9f9; /* Light background for contrast */
+  background-color: #f9f9f9;
   border-radius: 8px;
   max-width: 800px;
   margin: 0 auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 10%);
 }
 
 .progress-row {
-  display: contents; /* Make rows align properly within the grid */
+  display: contents; 
 }
 
 .question,
@@ -309,8 +258,8 @@ button:hover {
 .correct-answer,
 .status {
   padding: 10px;
-  background-color: #ffffff; /* White background for each cell */
-  border: 1px solid #ccc; /* Border for each cell */
+  background-color: #fff; 
+  border: 1px solid #ccc;
   border-radius: 4px;
 }
 
@@ -330,9 +279,9 @@ button:hover {
 .summary {
   margin-top: 20px;
   padding: 15px;
-  background-color: #e8f5e9; /* Light green background for summary */
+  background-color: #e8f5e9; 
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   text-align: center;
 }
 
@@ -340,22 +289,32 @@ button:hover {
   margin-bottom: 10px;
 }
 
-@media (max-width: 768px) {
-  .flashcard {
-    padding: 15px;
-  }
-
-  .card-footer button {
-    width: 100%;
-  }
-
+@media (width <= 768px) {
   #buttons-container {
     flex-direction: column;
     gap: 5px;
   }
-}
+
+  @media (width <= 768px) {
+    .navigation-buttons button,
+    .card-footer button{
+      padding: 8px 16px; 
+      font-size: 0.875rem; 
+    }
+  }
+ 
+  h1 {
+    font-size: clamp(1.5rem, 2.5vw, 3rem);
+    line-height: 1.2;
+    margin: 0;
+  }
+
 body {
   padding-bottom: 80px;
+}
+
+.flashcard {
+  padding: 15px;
 }
 
 .lecture-footer-buttons {
@@ -380,4 +339,5 @@ body {
   font-size: 1rem;
   flex: 1;
   max-width: 45%;
+}
 }

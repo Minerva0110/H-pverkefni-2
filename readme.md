@@ -73,11 +73,11 @@ npm run lint
 - Kortin eru birt eitt í einu, og notandinn getur skoðað næsta kort með því að - smella á hnappinn „Næsta“.
 
 ## Spurningar
-Þegar valið er að taka spurningar:
+Þegar valið er að svara spurningum:
 - Gögn eru sótt úr JSON-skrá (t.d. questions.json).
 - Spurningarnar eru birtar ein í einu, og notandinn velur svar.
 - Rétt og röng svör eru merkt og talin.
-- Þegar allar spurningar eru búið að svara, birtist stigatafla sem sýnir hlutfall réttra svara.
+- Þegar allar spurningar eru svaraðar, birtist stigatafla sem sýnir hlutfall réttra svara.
 
 ## Framvinduskráning
 - Framvinda notandans (rétt og röng svör) er geymd í localStorage með dagsetningu og viðeigandi efni.
