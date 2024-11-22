@@ -80,8 +80,8 @@ button {
 button:active {
   box-shadow: 0 1px 3px rgb(0 0 0 / 20%) inset;
   transform: scale(0.98);
-  background-color: #555555; 
-  color: #ffffff; 
+  background-color: #555; 
+  color: #fff; 
 }
 
 button:hover {
@@ -101,6 +101,23 @@ button:hover {
 button:hover,
 .navigation-buttons button:hover,
 .card-footer button:hover {
+  background-color: var(--button-bg-hover-color);
+  color: var(--text-hover-color);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+  transform: translateY(-2px);
+}
+
+#scroll-up-btn {
+  padding: 10px 20px;
+  background-color: var(--button-bg-color);
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+#scroll-up-btn:hover {
   background-color: var(--button-bg-hover-color);
   color: var(--text-hover-color);
   box-shadow: 0 4px 8px rgb(0 0 0 / 20%);

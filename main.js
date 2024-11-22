@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
  
- 
   async function loadLectures(topic) {
     try {
       const response = await fetch(`data/${topic}/lectures.json`);
@@ -67,17 +66,15 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
       const data = await response.json();
- 
-
+  
       flashcardsContainer.innerHTML = "";
- 
- 
+  
+      // Render lectures
       data.lectures.forEach((lecture) => {
         const lectureContainer = document.createElement("div");
         lectureContainer.className = "lecture-container";
         lectureContainer.innerHTML = `<h3>${lecture.title}</h3>`;
- 
- 
+  
         lecture.content.forEach((contentItem) => {
           if (contentItem.type === "heading") {
             lectureContainer.innerHTML += `<h4>${contentItem.data}</h4>`;
@@ -99,19 +96,45 @@ document.addEventListener("DOMContentLoaded", () => {
               .join("")}</ul>`;
           }
         });
- 
- 
+  
         flashcardsContainer.appendChild(lectureContainer);
       });
- 
+  
+      const existingButtons = document.querySelector(".lecture-footer-buttons");
+      if (existingButtons) {
+        existingButtons.remove();
+      }
+  
+      // Add navigation buttons
+      const buttonsContainer = document.createElement("div");
+      buttonsContainer.className = "lecture-footer-buttons";
+      buttonsContainer.innerHTML = `
+        <button id="scroll-up-btn">Aftur upp</button>
+        <button id="questions-btn">Tilbúin/n í Spurningar</button>
+      `;
+  
+      flashcardsContainer.appendChild(buttonsContainer);
+  
+      // Add event listener for "Aftur upp"
+      document.getElementById("scroll-up-btn").addEventListener("click", () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+  
+      // Add event listener for "Tilbúin/n í Spurningar"
+      document.getElementById("questions-btn").addEventListener("click", () => {
+        loadQuestions(topic);
+      });
     } catch (error) {
       console.error(error);
       flashcardsContainer.innerHTML =
         "<p>Error loading the lectures. Please try again later.</p>";
     }
   }
- 
- 
+  
+
   async function loadKeywords(topic) {
     try {
       const response = await fetch(`data/${topic}/keywords.json`);
@@ -381,7 +404,8 @@ function displayProgress() {
     window.onload = displayProgress;
   }
  
-
+ 
+  // Function to shuffle an array
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -390,82 +414,7 @@ function displayProgress() {
     return array;
   }
  
-  
-  async function loadLectures(topic) {
-    try {
-      const response = await fetch(`data/${topic}/lectures.json`);
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching data for ${topic}: ${response.statusText}`
-        );
-      }
-      const data = await response.json();
- 
 
-      flashcardsContainer.innerHTML = "";
- 
- 
-
-      data.lectures.forEach((lecture) => {
-        const lectureContainer = document.createElement("div");
-        lectureContainer.className = "lecture-container";
-        lectureContainer.innerHTML = `<h3>${lecture.title}</h3>`;
- 
- 
-        lecture.content.forEach((contentItem) => {
-          if (contentItem.type === "heading") {
-            lectureContainer.innerHTML += `<h4>${contentItem.data}</h4>`;
-          } else if (contentItem.type === "text") {
-            lectureContainer.innerHTML += `<p>${contentItem.data}</p>`;
-          } else if (contentItem.type === "quote") {
-            lectureContainer.innerHTML += `<blockquote>${
-              contentItem.data
-            }<br><small>${contentItem.attribute || ""}</small></blockquote>`;
-          } else if (contentItem.type === "image") {
-            lectureContainer.innerHTML += `<div class="image-container"><img src="${
-              contentItem.data
-            }" alt="${contentItem.caption || ""}" class="full-width-image"><p>${
-              contentItem.caption || ""
-            }</p></div>`;
-          } else if (contentItem.type === "list") {
-            lectureContainer.innerHTML += `<ul>${contentItem.data
-              .map((item) => `<li>${item}</li>`)
-              .join("")}</ul>`;
-          }
-        });
- 
- 
-        flashcardsContainer.appendChild(lectureContainer);
-      });
- 
- 
-      const buttonsContainer = document.createElement("div");
-      buttonsContainer.className = "lecture-footer-buttons";
-      buttonsContainer.innerHTML = `
-        <button id="home-btn">Heim</button>
-        <button id="questions-btn">Tilbúin/n í Spurningar</button>
-    `;
- 
- 
-      flashcardsContainer.appendChild(buttonsContainer);
- 
-
-      document.getElementById("home-btn").addEventListener("click", () => {
-        location.reload();
-      });
- 
- 
-      document.getElementById("questions-btn").addEventListener("click", () => {
-        loadQuestions(topic);
-      });
-    } catch (error) {
-      console.error(error);
-      flashcardsContainer.innerHTML =
-        "<p>Error loading the lectures. Please try again later.</p>";
-    }
-  }
- 
- 
   function triggerConfetti() {
     if (typeof confetti === "function") {
       confetti({
