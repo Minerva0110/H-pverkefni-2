@@ -13,8 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.style.backgroundColor = ""; // Reset to default
       });
 
-      // Set the selected button's color to #BCD2E8
-      button.style.backgroundColor = "#BCD2E8";
+      button.style.backgroundColor = "#5A7184";
 
       topic = button.dataset.topic; // Get topic (e.g., 'css', 'html', 'js')
       addNavigationButtons(topic);
@@ -247,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Change button colors and reset others
         answerButtons.forEach((btn) => {
           if (btn === button) {
-            btn.style.backgroundColor = "#bcd2e8"; // Selected color
+            btn.style.backgroundColor = "#5A7184"; // Selected color
           } else {
             btn.style.backgroundColor = ""; // Reset color
           }
@@ -419,12 +418,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Add event listeners to the new buttons
       document.getElementById("home-btn").addEventListener("click", () => {
-        // Reload the page to simulate a reset
-        location.reload(); // This will reload the entire page
+        location.reload();
       });
 
       document.getElementById("questions-btn").addEventListener("click", () => {
-        // Load questions for the current topic
         loadQuestions(topic);
       });
     } catch (error) {
