@@ -405,23 +405,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         flashcardsContainer.appendChild(lectureContainer);
       });
-
       // Add buttons at the bottom
       const buttonsContainer = document.createElement("div");
       buttonsContainer.className = "lecture-footer-buttons";
       buttonsContainer.innerHTML = `
-        <button id="home-btn">Heim</button>
-        <button id="questions-btn">Tilbúin/n í Spurningar</button>
-    `;
+       <button id="home-btn">Heim</button>
+       <button id="questions-btn">Tilbúin/n í Spurningar</button>
+   `;
 
       flashcardsContainer.appendChild(buttonsContainer);
 
       // Add event listeners to the new buttons
       document.getElementById("home-btn").addEventListener("click", () => {
-        location.reload();
+        // Redirect to the home page or main view
+        document
+          .getElementById("buttons-container")
+          .scrollIntoView({ behavior: "smooth" });
       });
 
       document.getElementById("questions-btn").addEventListener("click", () => {
+        // Load questions for the current topic
         loadQuestions(topic);
       });
     } catch (error) {
