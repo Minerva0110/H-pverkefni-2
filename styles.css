@@ -21,9 +21,9 @@ html {
   --color-background-zebra: var(--color-light-gray);
 
   --button-bg-color: #2e5984;
-  --button-bg-hover-color: #1e3f66;
+  --button-bg-hover-color: #bcd2e8;
   --button-back-color: #22223b;
-  --header-bg-color: #2e5984;
+  --header-bg-color: #bcd2e8;
 
   --body-bg-color: #f0efeb;
   --outer-bg-color: #bcd2e8;
@@ -102,7 +102,7 @@ footer {
 }
 
 .footer-btn {
-  background-color: #4caf50;
+  background-color: #d8871d;
   color: white;
   padding: 5px 15px;
   text-decoration: none;
@@ -113,7 +113,7 @@ footer {
 }
 
 .footer-btn:hover {
-  background-color: #45a049;
+  background-color: #d8871d;
 }
 
 #root {
