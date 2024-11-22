@@ -337,8 +337,8 @@ document.addEventListener("DOMContentLoaded", () => {
  
   // Geymir framvindu notandans í localStorage
   function saveProgress(questionId, isCorrect, topic) {
-    const date = new Date().toLocaleDateString("is-IS");
-    const progressKey = `${date}-${topic}`;
+    const today = new Date().toLocaleDateString('is-IS');
+    const progressKey = `${today}-${topic}`;
     let progress = JSON.parse(localStorage.getItem("userProgress")) || {};
  
  
