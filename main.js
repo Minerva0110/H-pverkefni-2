@@ -109,13 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const buttonsContainer = document.createElement("div");
       buttonsContainer.className = "lecture-footer-buttons";
       buttonsContainer.innerHTML = `
-        <button id="scroll-up-btn">Aftur upp</button>
+        <button id="scroll-up-btn">Heim</button>
         <button id="questions-btn">Tilbúin/n í Spurningar</button>
       `;
   
       flashcardsContainer.appendChild(buttonsContainer);
   
-      // Add event listener for "Aftur upp"
+      // Add event listener for "Heim"
       document.getElementById("scroll-up-btn").addEventListener("click", () => {
         window.scrollTo({
           top: 0,
