@@ -404,7 +404,10 @@ function displayProgress() {
     window.onload = displayProgress;
   }
  
- 
+  if (window.location.href.includes("progress.html")) {
+    window.onload = displayProgress;
+  }
+  
   // Function to shuffle an array
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
